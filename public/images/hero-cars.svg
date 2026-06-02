@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Premium used cars in a comparison marketplace">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#f7fbff"/>
+      <stop offset=".58" stop-color="#eaf3ff"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" x2="1">
+      <stop stop-color="#0b4bd8"/>
+      <stop offset="1" stop-color="#2f7df6"/>
+    </linearGradient>
+    <linearGradient id="black" x1="0" x2="1">
+      <stop stop-color="#07111f"/>
+      <stop offset="1" stop-color="#1b2638"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#07111f" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <path fill="#d9e9ff" d="M0 594c178-48 342-72 492-72 220 0 320 68 512 62 188-6 292-78 596-42v358H0z"/>
+  <path fill="#fff" opacity=".75" d="M108 214h262v98H108zM1172 150h266v112h-266zM948 246h140v70H948z"/>
+  <g filter="url(#shadow)">
+    <path fill="url(#black)" d="M244 516c20-87 67-142 143-166 124-40 286-37 446-17 88 11 157 36 207 75l125 98c54 9 92 44 114 107l18 54H178l14-57c12-50 30-81 52-94Z"/>
+    <path fill="url(#blue)" d="M344 370c118-61 337-58 513-26 49 9 91 27 126 54l105 82H278c12-49 34-86 66-110Z"/>
+    <path fill="#eaf3ff" d="M418 382c73-24 160-30 262-18l-34 114H330c16-41 45-73 88-96ZM720 370c78 9 145 27 201 54l68 54H684z"/>
+    <path fill="#07111f" d="M250 647h934v70H250z"/>
+    <circle cx="384" cy="703" r="86" fill="#07111f"/>
+    <circle cx="384" cy="703" r="46" fill="#f8fbff"/>
+    <circle cx="384" cy="703" r="22" fill="#2f7df6"/>
+    <circle cx="1050" cy="703" r="86" fill="#07111f"/>
+    <circle cx="1050" cy="703" r="46" fill="#f8fbff"/>
+    <circle cx="1050" cy="703" r="22" fill="#2f7df6"/>
+    <rect x="754" y="502" width="92" height="18" rx="9" fill="#fff" opacity=".85"/>
+  </g>
+  <g transform="translate(1060 330)" filter="url(#shadow)">
+    <rect width="310" height="220" rx="28" fill="#fff"/>
+    <circle cx="62" cy="66" r="34" fill="#e8f2ff"/>
+    <path fill="#2f7df6" d="M51 69h22v9H51zM45 53h34v13H45z"/>
+    <rect x="112" y="48" width="146" height="18" rx="9" fill="#07111f"/>
+    <rect x="112" y="82" width="118" height="14" rx="7" fill="#8ca0ba"/>
+    <rect x="34" y="138" width="242" height="14" rx="7" fill="#d8e5f4"/>
+    <rect x="34" y="168" width="176" height="14" rx="7" fill="#2f7df6"/>
+  </g>
+</svg>
