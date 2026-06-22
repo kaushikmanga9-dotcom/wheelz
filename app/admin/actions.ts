@@ -2,29 +2,22 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { hasSupabaseEnv } from "@/lib/supabase/env";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { hasSupabaseAdminEnv } from "@/lib/supabase/env";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { calculateValueScore } from "@/lib/value-score";
+import { hasValidAdminSession } from "@/lib/admin-auth";
 import type { Car } from "@/lib/cars";
 
 export async function createUsedCarListing(formData: FormData): Promise<void> {
-  if (!hasSupabaseEnv) {
-    redirectWithError("Add Supabase environment variables before creating listings.");
+  if (!hasValidAdminSession()) {
+    redirect("/admin/login?next=%2Fadmin");
   }
 
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user },
-    error: userError
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    redirectWithError("You must be logged in as an admin to add listings.");
+  if (!hasSupabaseAdminEnv) {
+    redirectWithError("Add Supabase service-role environment variables before creating listings.");
   }
 
-  if (user.app_metadata?.role !== "admin") {
-    redirectWithError("Your account is not marked as an admin in Supabase app_metadata.");
-  }
+  const supabase = createSupabaseAdminClient();
 
   const brand = readText(formData, "brand");
   const model = readText(formData, "model");
@@ -59,7 +52,7 @@ export async function createUsedCarListing(formData: FormData): Promise<void> {
     redirectWithError(validationError);
   }
 
-  const marketAveragePrice = await estimateMarketAveragePrice({ brand, model, city, price });
+  const marketAveragePrice = await estimateMarketAveragePrice({ brand, model, city, price, supabase });
   const carAgeYears = Math.max(0, new Date().getFullYear() - year);
   const valueResult = calculateValueScore({
     listedPrice: price,
@@ -75,7 +68,7 @@ export async function createUsedCarListing(formData: FormData): Promise<void> {
   });
 
   const id = createListingId([brand, model, variant, String(year)]);
-  const imageResult = await uploadImages(formData, id);
+  const imageResult = await uploadImages(formData, id, supabase);
 
   if (imageResult.error) {
     redirectWithError(imageResult.error);
@@ -129,14 +122,15 @@ async function estimateMarketAveragePrice({
   brand,
   model,
   city,
-  price
+  price,
+  supabase
 }: {
   brand: string;
   model: string;
   city: string;
   price: number;
+  supabase: ReturnType<typeof createSupabaseAdminClient>;
 }) {
-  const supabase = createSupabaseServerClient();
   const { data } = await supabase
     .from("cars")
     .select("price")
@@ -154,8 +148,11 @@ async function estimateMarketAveragePrice({
   return Math.round(prices.reduce((sum, value) => sum + value, 0) / prices.length);
 }
 
-async function uploadImages(formData: FormData, carId: string): Promise<{ urls: string[]; error?: string }> {
-  const supabase = createSupabaseServerClient();
+async function uploadImages(
+  formData: FormData,
+  carId: string,
+  supabase: ReturnType<typeof createSupabaseAdminClient>
+): Promise<{ urls: string[]; error?: string }> {
   const files = formData
     .getAll("images")
     .filter((item): item is File => item instanceof File && item.size > 0)

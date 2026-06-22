@@ -33,6 +33,10 @@ Fill in:
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+ADMIN_EMAIL=you@example.com
+ADMIN_PASSCODE=change-this-private-passcode
+ADMIN_SESSION_SECRET=change-this-long-random-secret
+SUPABASE_SERVICE_ROLE_KEY=your-server-only-service-role-key
 ```
 
 Run the development server:
@@ -49,7 +53,7 @@ Open `http://localhost:3000`.
 2. Run `supabase/schema.sql` in the Supabase SQL editor.
 3. Run `supabase/seed.sql` to load starter car listings.
 4. Add `${NEXT_PUBLIC_SITE_URL}/auth/callback` to Supabase Auth redirect URLs.
-5. To use `/admin`, set the logged-in user's `app_metadata.role` to `admin`.
+5. To use the hidden `/admin` add-listing page, configure `ADMIN_EMAIL`, `ADMIN_PASSCODE`, `ADMIN_SESSION_SECRET`, and `SUPABASE_SERVICE_ROLE_KEY`.
 
 The schema creates:
 
@@ -57,7 +61,7 @@ The schema creates:
 - `saved_cars`
 - `price_alerts`
 - `car-images` storage bucket
-- RLS policies for public car reads, user-owned saves and alerts, and admin-only car writes
+- RLS policies for public car reads and user-owned saves/alerts. Admin writes run through a server-only service-role client after email/passcode verification.
 
 ## Main Routes
 
@@ -67,7 +71,8 @@ The schema creates:
 - `/compare` - Side-by-side comparison
 - `/saved` - Saved cars
 - `/login` - Email magic-link login
-- `/admin` - Admin add-listing form
+- `/admin/login` - Private admin email/passcode login
+- `/admin` - Hidden admin add-listing form, available only after email/passcode authentication
 
 ## Production Build
 
@@ -91,6 +96,8 @@ npm run start
 
 ## Notes
 
-- The app uses the Supabase anon key only. Keep the service-role key out of the frontend and Vercel env vars for this app.
+- The buyer-facing app uses the Supabase anon key. The admin form uses `SUPABASE_SERVICE_ROLE_KEY` only in server actions.
+- Add the service-role key to Vercel only as `SUPABASE_SERVICE_ROLE_KEY`; never expose it with a `NEXT_PUBLIC_` prefix.
+- The admin page is intentionally not linked in production public navigation; open `/admin` directly after signing in with the private admin passcode.
 - Car uploads go to the public `car-images` bucket and are optimized by Next.js when rendered.
 - If Supabase env vars are missing, the public car pages fall back to local mock data.

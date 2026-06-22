@@ -2,6 +2,8 @@ import Link from "next/link";
 import { CarFront } from "lucide-react";
 
 export function Footer() {
+  const showDevAdminLink = process.env.NODE_ENV !== "production";
+
   return (
     <footer className="bg-brand-black py-10 text-white">
       <div className="page-wrap grid gap-8 md:grid-cols-[1.1fr_1fr]">
@@ -21,12 +23,12 @@ export function Footer() {
           <Link href="/compare">Compare</Link>
           <Link href="/saved">Saved cars</Link>
           <Link href="/login">Login</Link>
-          <Link href="/admin">Admin</Link>
+          {showDevAdminLink && <Link href="/admin">Admin</Link>}
           <Link href="/">Inspection</Link>
           <Link href="/">Support</Link>
         </div>
         <div className="border-t border-white/10 pt-5 text-sm text-slate-400 md:col-span-2">
-          © 2026 Wheelz. Mock frontend only.
+          (c) 2026 Wheelz. Mock frontend only.
         </div>
       </div>
     </footer>

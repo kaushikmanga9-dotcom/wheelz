@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CarFront, ImagePlus, LockKeyhole, Save, Sparkles } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { createUsedCarListing } from "@/app/admin/actions";
+import { hasValidAdminSession } from "@/lib/admin-auth";
 
 export const metadata: Metadata = {
   title: "Admin Add Listing",
   description: "Add verified used-car listings to Supabase and calculate value scores automatically."
 };
+
+export const dynamic = "force-dynamic";
 
 type AdminPageProps = {
   searchParams?: {
@@ -15,7 +19,11 @@ type AdminPageProps = {
   };
 };
 
-export default function AdminPage({ searchParams }: AdminPageProps) {
+export default async function AdminPage({ searchParams }: AdminPageProps) {
+  if (!hasValidAdminSession()) {
+    redirect("/admin/login?next=%2Fadmin");
+  }
+
   return (
     <div className="min-h-screen bg-soft">
       <AppHeader />
@@ -85,7 +93,7 @@ export default function AdminPage({ searchParams }: AdminPageProps) {
               age, owners, insurance, service history, accident history, and city demand.
             </p>
             <div className="mt-5 rounded-card bg-soft p-4 text-sm font-bold leading-6 text-slate-700">
-              Admin access is enforced by Supabase RLS. Set the user&apos;s `app_metadata.role` to `admin`.
+              Admin access is protected by a signed server cookie. Keep your passcode and service-role key private.
             </div>
             <Link href="/search" className="mt-5 inline-flex items-center gap-2 text-sm font-black text-brand-blue">
               <CarFront size={17} />
