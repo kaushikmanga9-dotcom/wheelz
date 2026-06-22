@@ -6,3 +6,5 @@ dist
 !.env.example
 !.env.local.example
 *.log
+
+.vercel
